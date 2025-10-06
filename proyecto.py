@@ -55,7 +55,7 @@ def camera_loop():
                 for box in r.boxes:
                     x1, y1, x2, y2 = map(int, box.xyxy[0].cpu().numpy())
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 150), 3)
-                    cv2.putText(frame, "📘 Libro detectado", (x1, y1 - 10),
+                    cv2.putText(frame, "Libro detectado", (x1, y1 - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 150), 2)
 
                     # proyeccion 3d
@@ -75,7 +75,7 @@ def camera_loop():
                             for j in range(4):
                                 frame = cv2.line(frame, tuple(imgpts[j]), tuple(imgpts[j+4]), (255, 0, 0), 2)
                             frame = cv2.drawContours(frame, [imgpts[4:]], -1, (0, 0, 255), 2)
-                            cv2.putText(frame, "🧊 Cubo proyectado", (x1, y2 + 30),
+                            cv2.putText(frame, "Cubo proyectado", (x1, y2 + 30),
                                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
 
         # mostrar frame
@@ -103,24 +103,24 @@ def start_camera():
 def detect_objects():
     global detecting
     if not running:
-        status_label.config(text="⚠️ Activa la cámara primero", foreground="#FF3333")
+        status_label.config(text="Activa la cámara primero", foreground="#FF3333")
         return
     detecting = not detecting
     if detecting:
-        status_label.config(text="🔍 Detección YOLO activada", foreground="#00FF99")
+        status_label.config(text="Detección YOLO activada", foreground="#00FF99")
     else:
-        status_label.config(text="🕹️ Detección detenida", foreground="#999999")
+        status_label.config(text="Detección detenida", foreground="#999999")
 
 def project_3d():
     global projecting
     if not detecting:
-        status_label.config(text="⚠️ Inicia detección antes de proyectar", foreground="#FF3333")
+        status_label.config(text="Inicia detección antes de proyectar", foreground="#FF3333")
         return
     projecting = not projecting
     if projecting:
-        status_label.config(text="🧊 Proyección 3D activa", foreground="#00BFFF")
+        status_label.config(text="Proyección 3D activa", foreground="#00BFFF")
     else:
-        status_label.config(text="🕹️ Proyección detenida", foreground="#999999")
+        status_label.config(text="Proyección detenida", foreground="#999999")
 
 def stop_camera():
     global running, detecting, projecting
@@ -129,17 +129,17 @@ def stop_camera():
     projecting = False
     if cap:
         cap.release()
-    status_label.config(text="🛑 Cámara detenida", foreground="#FF5555")
+    status_label.config(text="Cámara detenida", foreground="#FF5555")
     frame_display.config(image='')
 
 # interfaz
 root = tk.Tk()
-root.title("🧠 Interfaz Futurista - YOLO + Cubo 3D")
+root.title("Interfaz YOLO + Cubo 3D")
 root.geometry("1000x700")
 root.configure(bg="#0A0F0D")
 
 # titulo
-title_label = tk.Label(root, text="🧠 Sistema YOLO + Proyección 3D",
+title_label = tk.Label(root, text="Sistema YOLO + Proyección 3D",
                        bg="#0A0F0D", fg="#00FF99", font=("Consolas", 20, "bold"))
 title_label.pack(pady=10)
 
@@ -160,13 +160,13 @@ style.configure("TButton",
                 foreground="#00FFAA",
                 padding=10)
 
-ttk.Button(button_frame, text="🚀 Iniciar Cámara", command=start_camera).grid(row=0, column=0, padx=12)
-ttk.Button(button_frame, text="🔍 Detección de Objetos", command=detect_objects).grid(row=0, column=1, padx=12)
-ttk.Button(button_frame, text="🧊 Proyectar Cubo 3D", command=project_3d).grid(row=0, column=2, padx=12)
-ttk.Button(button_frame, text="🛑 Detener Cámara", command=stop_camera).grid(row=0, column=3, padx=12)
+ttk.Button(button_frame, text="Iniciar Cámara", command=start_camera).grid(row=0, column=0, padx=12)
+ttk.Button(button_frame, text="Detección de Objetos", command=detect_objects).grid(row=0, column=1, padx=12)
+ttk.Button(button_frame, text="Proyectar Cubo 3D", command=project_3d).grid(row=0, column=2, padx=12)
+ttk.Button(button_frame, text="Detener Cámara", command=stop_camera).grid(row=0, column=3, padx=12)
 
 # estado
-status_label = tk.Label(root, text="🕹️ En espera",
+status_label = tk.Label(root, text="En espera",
                         bg="#0A0F0D", fg="#999999", font=("Consolas", 14, "bold"))
 status_label.pack(pady=15)
 
@@ -176,4 +176,5 @@ footer = tk.Label(root, text="Futuristic Interface - YOLOv8 + OpenCV + Tkinter",
 footer.pack(side=tk.BOTTOM, pady=5)
 
 root.mainloop()
+
 
