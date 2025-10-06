@@ -176,3 +176,4 @@ footer = tk.Label(root, text="Futuristic Interface - YOLOv8 + OpenCV + Tkinter",
 footer.pack(side=tk.BOTTOM, pady=5)
 
 root.mainloop()
+
