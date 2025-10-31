@@ -7,7 +7,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from ultralytics import YOLO
 
-# calibracion
+# calibracion 
 data = np.load("calibracion.npz")
 K = data["K"]
 dist = data["D"]
@@ -176,3 +176,4 @@ footer = tk.Label(root, text="Futuristic Interface - YOLOv8 + OpenCV + Tkinter",
 footer.pack(side=tk.BOTTOM, pady=5)
 
 root.mainloop()
+
