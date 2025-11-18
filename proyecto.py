@@ -2,178 +2,213 @@ import cv2
 import numpy as np
 import torch
 import threading
+import time
 import tkinter as tk
 from tkinter import ttk
-from PIL import Image, ImageTk
 from ultralytics import YOLO
+from filterpy.kalman import KalmanFilter
+import trimesh
+from PIL import Image, ImageTk
+import multiprocessing
 
-# calibracion 
-data = np.load("calibracion.npz")
-K = data["K"]
-dist = data["D"]
+NUCLEOS = 2
 
-# yolo
-device = "cuda" if torch.cuda.is_available() else "cpu"
-print("Dispositivo en uso:", device)
+datos_calibracion = np.load("calibracion_charuco.npz")
+K, distorsion = datos_calibracion["K"], datos_calibracion["D"]
 
-model = YOLO("yolov8n.pt").to(device)
-target_class = "book"
-class_names = model.names
-target_id = [k for k, v in class_names.items() if v == target_class][0]
+tam_base_cubo = 0.04
+escala_cubo = 0.5
+offset_z = 0.025
+tam_objetivo = tam_base_cubo * escala_cubo
 
-# parametros fisicos
-book_width = 0.15
-book_height = 0.22
-cube_height = 0.05
+def cargar_objeto(ruta, tam_objetivo=0.07):
+    malla = trimesh.load(ruta, force='mesh')
+    vertices = np.array(malla.vertices, np.float32)
+    caras = np.array(malla.faces, np.int32)
+    min_b, max_b = vertices.min(0), vertices.max(0)
+    tam = max_b - min_b
+    escala = tam_objetivo / np.max(tam)
+    vertices = (vertices - (min_b + max_b) / 2) * escala
+    vertices[:, 2] *= -1
+    return vertices, caras
 
-cube_pts = np.float32([
-    [0, 0, 0], [book_width, 0, 0], [book_width, book_height, 0], [0, book_height, 0],
-    [0, 0, -cube_height], [book_width, 0, -cube_height],
-    [book_width, book_height, -cube_height], [0, book_height, -cube_height]
-])
+vertices_objeto, caras_objeto = cargar_objeto("modelo.obj", tam_objetivo=tam_objetivo)
 
-# variables globales
-cap = None
-running = False
-detecting = False
-projecting = False
-frame_display = None
+dispositivo = "cuda" if torch.cuda.is_available() else "cpu"
+modelo = YOLO("yolov8x.pt").to(dispositivo)
+id_objetivo = [k for k, v in modelo.names.items() if v == "book"][0]
 
-# camara
-def camera_loop():
-    global running, frame_display
+def crear_kalman(dt=1/30):
+    kalman = KalmanFilter(dim_x=4, dim_z=2)
+    kalman.F = np.array([[1, 0, dt, 0],
+                         [0, 1, 0, dt],
+                         [0, 0, 1,  0],
+                         [0, 0, 0,  1]], np.float32)
+    kalman.H = np.array([[1, 0, 0, 0],
+                         [0, 1, 0, 0]], np.float32)
+    kalman.P *= 500.0
+    kalman.R *= 25
+    kalman.Q *= 5
+    return kalman
 
-    while running:
+seguidores, libros_estables = {}, {}
+
+camara_activa = False
+detectar_activo = False
+proyeccion_activa = False
+ultimo_frame = None
+frame_listo = False
+
+def proyectar_vertices_parcial(vertices, rvec, tvec, K, dist):
+    imgpts, _ = cv2.projectPoints(vertices, rvec, tvec, K, dist)
+    return imgpts.reshape(-1, 2)
+
+def proyectar_multiproceso(vertices, rvec, tvec, K, dist, n_cores=4):
+    partes = np.array_split(vertices, n_cores)
+    with multiprocessing.Pool(n_cores) as pool:
+        resultados = pool.starmap(proyectar_vertices_parcial,
+                                  [(p, rvec, tvec, K, dist) for p in partes])
+    return np.vstack(resultados)
+
+def proyectar_objeto(frame, caja, tvec_manual=None):
+    x1, y1, x2, y2 = map(int, caja)
+    esquinas_img = np.float32([[x1, y1],
+                               [x2, y1],
+                               [x2, y2],
+                               [x1, y2]])
+
+    libro_w, libro_h = 0.15, 0.22
+    esquinas_obj = np.float32([
+        [0, 0, 0],
+        [libro_w, 0, 0],
+        [libro_w, libro_h, 0],
+        [0, libro_h, 0]
+    ])
+
+    exito, rvec, tvec = cv2.solvePnP(esquinas_obj, esquinas_img, K, dist)
+    if not exito:
+        return
+
+    if tvec_manual is not None:
+        tvec = tvec_manual
+
+    offset_x = (libro_w - tam_objetivo) / 2
+    offset_y = (libro_h - tam_objetivo) / 2
+    offset_local_z = offset_z
+    vertices_ajustados = vertices_objeto + np.array([offset_x, offset_y, offset_local_z], np.float32)
+
+    imgpts = proyectar_multiproceso(vertices_ajustados, rvec, tvec, K, dist, NUCLEOS)
+    imgpts = np.int32(np.round(imgpts)).reshape(-1, 2)
+
+    for c in caras_objeto:
+        pts = imgpts[c]
+        cv2.polylines(frame, [pts], True, (255, 200, 100), 1)
+
+def hilo_camara():
+    global ultimo_frame, frame_listo, camara_activa, detectar_activo, proyeccion_activa
+
+    cap = cv2.VideoCapture(2, cv2.CAP_ANY)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    cap.set(cv2.CAP_PROP_FPS, 60)
+
+    tvec_manual = np.array([[0.0], [0.0], [0.5]], np.float32)
+    tvec_guardado = tvec_manual.copy()
+
+    while camara_activa:
         ret, frame = cap.read()
         if not ret:
             continue
+        frame = cv2.flip(frame, 1)
 
-        # deteccion
-        if detecting:
-            results = model(frame, classes=[target_id], imgsz=960, device=device, verbose=False)
-            for r in results:
-                for box in r.boxes:
-                    x1, y1, x2, y2 = map(int, box.xyxy[0].cpu().numpy())
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 150), 3)
-                    cv2.putText(frame, " Libro detectado", (x1, y1 - 10),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 150), 2)
+        if detectar_activo:
+            resultados = modelo.predict(frame, classes=[id_objetivo],
+                                        imgsz=960, conf=0.75, iou=0.5,
+                                        device=dispositivo, verbose=False)
+            for r in resultados:
+                for caja in r.boxes:
+                    x1, y1, x2, y2 = map(int, caja.xyxy[0].cpu().numpy())
+                    libros_estables[0] = (x1, y1, x2, y2, 1.0)
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0,255,0), 2)
+                    tvec_guardado = np.array([[0.0], [0.0], [0.5]], np.float32)
 
-                    # proyeccion 3d
-                    if projecting:
-                        img_corners = np.float32([[x1, y1], [x2, y1], [x2, y2], [x1, y2]])
-                        obj_corners = np.float32([
-                            [0, 0, 0],
-                            [book_width, 0, 0],
-                            [book_width, book_height, 0],
-                            [0, book_height, 0]
-                        ])
-                        success, rvec, tvec = cv2.solvePnP(obj_corners, img_corners, K, dist)
-                        if success:
-                            imgpts, _ = cv2.projectPoints(cube_pts, rvec, tvec, K, dist)
-                            imgpts = np.int32(np.round(imgpts)).reshape(-1, 2)
-                            frame = cv2.drawContours(frame, [imgpts[:4]], -1, (0, 255, 0), 2)
-                            for j in range(4):
-                                frame = cv2.line(frame, tuple(imgpts[j]), tuple(imgpts[j+4]), (255, 0, 0), 2)
-                            frame = cv2.drawContours(frame, [imgpts[4:]], -1, (0, 0, 255), 2)
-                            cv2.putText(frame, " Cubo proyectado", (x1, y2 + 30),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+        if proyeccion_activa and libros_estables:
+            detectar_activo = False
+            inicio_t = time.time()
 
-        # mostrar frame
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img = Image.fromarray(frame_rgb)
-        imgtk = ImageTk.PhotoImage(image=img)
+            for _, (x1, y1, x2, y2, _) in libros_estables.items():
+                proyectar_objeto(frame, (x1, y1, x2, y2), tvec_guardado)
 
-        frame_display.imgtk = imgtk
-        frame_display.configure(image=imgtk)
-        frame_display.after(10, camera_loop)
-        break
+            duracion = time.time() - inicio_t
+            print(f"Tiempo total de proyección ({NUCLEOS} núcleos): {duracion:.3f} s")
 
-# botones
-def start_camera():
-    global cap, running
-    if running:
-        return
-    cap = cv2.VideoCapture(0)
-    cap.set(3, 1280)
-    cap.set(4, 720)
-    running = True
-    status_label.config(text="Cámara activa", foreground="#00FFAA")
-    camera_loop()
+            proyeccion_activa = False
 
-def detect_objects():
-    global detecting
-    if not running:
-        status_label.config(text=" Activa la cámara primero", foreground="#FF3333")
-        return
-    detecting = not detecting
-    if detecting:
-        status_label.config(text="Detección YOLO activada", foreground="#00FF99")
-    else:
-        status_label.config(text=" Detección detenida", foreground="#999999")
+        ultimo_frame = frame
+        frame_listo = True
+        time.sleep(1 / 60)
 
-def project_3d():
-    global projecting
-    if not detecting:
-        status_label.config(text="Inicia detección antes de proyectar", foreground="#FF3333")
-        return
-    projecting = not projecting
-    if projecting:
-        status_label.config(text="Proyección 3D activa", foreground="#00BFFF")
-    else:
-        status_label.config(text="Proyección detenida", foreground="#999999")
+    cap.release()
 
-def stop_camera():
-    global running, detecting, projecting
-    running = False
-    detecting = False
-    projecting = False
-    if cap:
-        cap.release()
-    status_label.config(text="Cámara detenida", foreground="#FF5555")
-    frame_display.config(image='')
+def actualizar_gui():
+    global ultimo_frame, frame_listo
+    if frame_listo and ultimo_frame is not None:
+        frame_listo = False
+        img = cv2.cvtColor(ultimo_frame, cv2.COLOR_BGR2RGB)
+        imgtk = ImageTk.PhotoImage(Image.fromarray(img))
+        etiqueta_video.imgtk = imgtk
+        etiqueta_video.configure(image=imgtk)
+    ventana.after(15, actualizar_gui)
 
-# interfaz
-root = tk.Tk()
-root.title(" YOLO + Cubo 3D")
-root.geometry("1000x700")
-root.configure(bg="#0A0F0D")
+def iniciar_camara():
+    global camara_activa
+    if not camara_activa:
+        camara_activa = True
+        threading.Thread(target=hilo_camara, daemon=True).start()
 
-# titulo
-title_label = tk.Label(root, text="Sistema YOLO + Proyección 3D",
-                       bg="#0A0F0D", fg="#00FF99", font=("Consolas", 20, "bold"))
-title_label.pack(pady=10)
+def activar_deteccion():
+    global detectar_activo
+    detectar_activo = True
+    print("Detección de libros activada")
 
-# video
-video_frame = tk.Frame(root, bg="#101820", width=900, height=500)
-video_frame.pack(pady=10)
-frame_display = tk.Label(video_frame, bg="#000000")
-frame_display.pack()
+def proyectar_objetos():
+    global proyeccion_activa
+    proyeccion_activa = True
+    print("Proyección iniciada: detección pausada")
 
-# botones
-button_frame = tk.Frame(root, bg="#0A0F0D")
-button_frame.pack(pady=15)
+def detener_todo():
+    global detectar_activo, proyeccion_activa
+    detectar_activo = False
+    proyeccion_activa = False
+    print("Proyección y detección detenidas")
 
-style = ttk.Style()
-style.configure("TButton",
-                font=("Consolas", 12, "bold"),
-                background="#101820",
-                foreground="#00FFAA",
-                padding=10)
+def salir():
+    global camara_activa
+    camara_activa = False
+    ventana.destroy()
 
-ttk.Button(button_frame, text=" Iniciar Cámara", command=start_camera).grid(row=0, column=0, padx=12)
-ttk.Button(button_frame, text=" Detección de Objetos", command=detect_objects).grid(row=0, column=1, padx=12)
-ttk.Button(button_frame, text=" Proyectar Cubo 3D", command=project_3d).grid(row=0, column=2, padx=12)
-ttk.Button(button_frame, text="Detener Cámara", command=stop_camera).grid(row=0, column=3, padx=12)
+if __name__ == "__main__":
+    multiprocessing.freeze_support()
 
-# estado
-status_label = tk.Label(root, text=" En espera",
-                        bg="#0A0F0D", fg="#999999", font=("Consolas", 14, "bold"))
-status_label.pack(pady=15)
+    ventana = tk.Tk()
+    ventana.title("Proyección multiproceso del cubo.glb sobre libro")
+    ventana.geometry("1280x800")
+    try:
+        ventana.state("zoomed")
+    except:
+        pass
 
-# pie
-footer = tk.Label(root, text="Futuristic Interface - YOLOv8 + OpenCV + Tkinter",
-                  bg="#0A0F0D", fg="#00FF99", font=("Consolas", 10))
-footer.pack(side=tk.BOTTOM, pady=5)
+    marco_controles = ttk.Frame(ventana)
+    marco_controles.pack(side="top", pady=10)
 
-root.mainloop()
+    ttk.Button(marco_controles, text="Iniciar cámara", command=iniciar_camara).grid(row=0, column=0, padx=10)
+    ttk.Button(marco_controles, text="Detectar libros", command=activar_deteccion).grid(row=0, column=1, padx=10)
+    ttk.Button(marco_controles, text="Proyectar GLB", command=proyectar_objetos).grid(row=0, column=2, padx=10)
+    ttk.Button(marco_controles, text="Detener todo", command=detener_todo).grid(row=0, column=3, padx=10)
+    ttk.Button(marco_controles, text="Salir", command=salir).grid(row=0, column=4, padx=10)
 
+    etiqueta_video = ttk.Label(ventana)
+    etiqueta_video.pack(expand=True, fill="both", padx=10, pady=10)
+
+    ventana.after(15, actualizar_gui)
+    ventana.mainloop()
