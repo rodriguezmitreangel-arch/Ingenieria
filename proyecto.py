@@ -11,7 +11,7 @@ import trimesh
 from PIL import Image, ImageTk
 import multiprocessing
 
-NUCLEOS = 2
+NUCLEOS = 2 
 
 datos_calibracion = np.load("calibracion_charuco.npz")
 K, distorsion = datos_calibracion["K"], datos_calibracion["D"]
@@ -212,3 +212,4 @@ if __name__ == "__main__":
 
     ventana.after(15, actualizar_gui)
     ventana.mainloop()
+
