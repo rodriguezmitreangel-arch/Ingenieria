@@ -1,4 +1,4 @@
-"""
+""" 
 app_complete_es.py
 Versión completa: Detección automática por frame + Proyección 3D + Manipulación por mano + GUI CustomTkinter
 
