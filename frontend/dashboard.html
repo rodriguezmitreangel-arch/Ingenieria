@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel AR3D</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <!-- Script del dashboard -->
+    <script defer src="js/dashboard.js"></script>
+</head>
+
+<body>
+
+    <!-- SIDEBAR / MENU LATERAL -->
+   
+    <aside class="sidebar">
+
+        <div class="logo-box">
+            <img src="assets/logo.png" class="logo">
+            <h2>AR<span>3D</span></h2>
+        </div>
+
+        <div class="user-box">
+            <p class="user-title">Usuario:</p>
+            <p id="user-name" class="user-value">Cargando...</p>
+
+            <p class="user-title">Nickname:</p>
+            <p id="user-nick" class="user-value"></p>
+
+            <p class="user-title">Correo:</p>
+            <p id="user-mail" class="user-value"></p>
+
+            <p class="user-title">ID:</p>
+            <p id="user-id" class="user-value"></p>
+        </div>
+
+        <nav class="menu">
+            <a href="#" id="btn-home" class="menu-item active"><i class="icon">🏠</i> Inicio</a>
+            <a href="#" id="btn-licencia" class="menu-item"><i class="icon">🎫</i> Estado de Licencia</a>
+            <a href="#" id="btn-modelos" class="menu-item"><i class="icon">📦</i> Modelos 3D</a>
+            <a href="#" id="btn-ar" class="menu-item"><i class="icon">🎥</i> AR en Tiempo Real</a>
+            <a href="#" id="btn-config" class="menu-item"><i class="icon">⚙️</i> Configuración</a>
+            <a href="#" id="btn-logout" class="menu-item logout"><i class="icon">🚪</i> Cerrar Sesión</a>
+        </nav>
+
+    </aside>
+
+    
+    <!-- MAIN CONTENT -->
+    
+    <main class="content">
+
+        <div id="view-home" class="view visible">
+            <h1 class="title">Bienvenido a tu Panel</h1>
+            <p class="subtitle">Administra tus modelos, licencia y módulos AR.</p>
+            <div class="stats-grid">
+                <div class="stat-card"><h3>Plan Actual</h3><p id="stat-plan">Cargando...</p></div>
+                <div class="stat-card"><h3>Modelos Subidos</h3><p id="stat-modelos">0</p></div>
+                <div class="stat-card"><h3>Último acceso</h3><p id="stat-ultimo">Hace un momento</p></div>
+            </div>
+        </div>
+
+        <div id="view-modelos" class="view">
+            <h1 class="title">Modelos 3D</h1>
+            <button class="btn-primary" id="btn-subir-modelo">Subir Modelo GLB</button>
+            <div id="lista-modelos" class="model-list">
+                <p>No hay modelos aún.</p>
+            </div>
+        </div>
+
+        
+        <!-- AR VIEW -->
+        
+        <div id="view-ar" class="view">
+            <h1 class="title">AR en Tiempo Real</h1>
+            <p class="subtitle">Módulo avanzado (conectado al backend y cámara).</p>
+
+            <div class="ar-box">
+                <p>Aquí se mostrará la cámara y la proyección AR.</p>
+            </div>
+        </div>
+
+        <div id="view-config" class="view">
+            <h1 class="title">Configuración General</h1>
+            <p class="subtitle">Preferencias del usuario y ajustes del sistema.</p>
+            <div class="stat-card"><h3>Modo Oscuro</h3><p>Activado por defecto</p></div>
+            <div class="stat-card"><h3>Notificaciones</h3><p>Próximamente...</p></div>
+        </div>
+
+        <div id="view-licencia" class="view">
+            <h1 class="title">Estado de tu Licencia</h1>
+            <p class="subtitle">Información en tiempo real sobre tu plan.</p>
+            <div id="lic-recuadro-actual" class="lic-box"></div>
+            <div id="lic-recuadro-pro" class="lic-box hidden">
+                <h2 class="lic-title pro">Plan PRO</h2>
+                <ul class="lic-list">
+                    <li>✔ Modelos ilimitados</li>
+                    <li>✔ Cámara seleccionable</li>
+                    <li>✔ Texturas ilimitadas</li>
+                    <li>✔ Funciones AR premium</li>
+                </ul>
+                <button id="btn-upgrade" class="btn-upgrade">Actualizar a PRO</button>
+            </div>
+        </div>
+
+    </main>
+
+   
+    <script src="js/ar.js"></script>
+
+</body>
+</html>

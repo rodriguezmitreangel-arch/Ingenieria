@@ -1,0 +1,87 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f1216;
+    color: white;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 50px;
+    background: #15191f;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+}
+.logo span {
+    color: #3498db;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #c9d6e2;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #3498db;
+}
+
+.hidden { display: none; }
+
+.hero {
+    text-align: center;
+    margin-top: 120px;
+}
+
+.hero h1 {
+    font-size: 60px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 24px;
+    opacity: 0.7;
+}
+
+.hero-buttons {
+    margin-top: 40px;
+}
+
+.btn-primary {
+    background: #3498db;
+    padding: 16px 40px;
+    border-radius: 8px;
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    margin-right: 20px;
+    
+    /* Lo que ya tenías */
+    padding-left: 2cm !important;
+    padding-right: 2cm !important;
+
+    /* 🔥 Nuevo: subir el botón */
+    margin-top: 60px; /* ajusta entre -10 y -40 según lo que quieras */
+}
+
+
+.btn-secondary {
+    background: transparent;
+    border: 2px solid #3498db;
+    padding: 14px 38px;
+    color: #3498db;
+    border-radius: 8px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
