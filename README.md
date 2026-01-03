@@ -7,7 +7,7 @@ Angel Rodriguez Mitre<sup>1</sup>, Norberto Aziel Mejía Hernández<sup>1</sup>
 
 # Manipulación de Objetos 3D en Realidad Aumentada mediante Reconocimiento de Gestos de la Mano
 
-Proyecto académico de **Ingeniería en Mecatrónica** enfocado en el desarrollo de un sistema de **Realidad Aumentada (RA)** que permite **manipular objetos 3D virtuales** (traslación, rotación y escalado) utilizando **gestos naturales de la mano**, basados exclusivamente en **visión por computadora**, sin sensores físicos adicionales.
+Proyecto académico de **Ingeniería en Inteligencia Artificial** enfocado en el desarrollo de un sistema de **Realidad Aumentada (RA)** que permite **manipular objetos 3D virtuales** (traslación, rotación y escalado) utilizando **gestos naturales de la mano**, basados exclusivamente en **visión por computadora**, sin sensores físicos adicionales.
 
 ---
 
@@ -32,7 +32,7 @@ Proyecto académico de **Ingeniería en Mecatrónica** enfocado en el desarrollo
 
 Este proyecto propone un sistema interactivo de **Realidad Aumentada** capaz de proyectar y manipular objetos 3D en un entorno real, utilizando como interfaz principal los **gestos de la mano del usuario**, capturados mediante una cámara RGB convencional.
 
-A diferencia de enfoques basados en sensores especializados o dispositivos hápticos, el sistema se apoya en técnicas de **visión por computadora**, detección de mano y análisis geométrico para interpretar gestos de manera eficiente en tiempo real.
+A diferencia de enfoques basados en sensores especializados o dispositivos hápticos, el sistema se apoya en técnicas de **visión por computadora**, detección de mano, análisis geométrico para interpretar gestos y superficies para realizar la proyección de manera eficiente en tiempo real.
 
 ---
 
@@ -40,11 +40,11 @@ A diferencia de enfoques basados en sensores especializados o dispositivos hápt
 
 ### Objetivo General
 
-Desarrollar un sistema de realidad aumentada que permita la manipulación intuitiva de objetos 3D mediante el reconocimiento de gestos de la mano usando visión por computadora.
+Desarrollar un sistema de realidad aumentada que permita la manipulación intuitiva de objetos 3D mediante el reconocimiento de gestos de la mano usando visión por computadora en tiempo real.
 
 ### Objetivos Específicos
 
-* Detectar y segmentar la mano del usuario en tiempo real.
+* Detectar y segmentar la mano del usuario.
 * Reconocer gestos básicos para interacción (rotar, mover, escalar).
 * Estimar la posición y orientación de la mano en el espacio.
 * Integrar un motor gráfico para la visualización de objetos 3D en RA.
