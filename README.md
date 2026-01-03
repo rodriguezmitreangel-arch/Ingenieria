@@ -1,6 +1,5 @@
 # Development of an Omnidirectional Modular Robot  
-## Ing, Inteligencia Artificial
-###2025
+## Ing. Inteligencia Artificial, 2025
 Angel Rodriguez Mitre<sup>1</sup>, Norberto Aziel Mejía Hernández<sup>1</sup>
 
 ¹ Instituto Politécnico Nacional  
