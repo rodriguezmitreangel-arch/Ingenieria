@@ -112,7 +112,7 @@ El sistema se divide en los siguientes módulos:
 ├── requirements.txt # Dependencias del proyecto
 ├── README.md        # Documentación principal
 └── LICENSE          # Licencia
-
+```
 
 ---
 
