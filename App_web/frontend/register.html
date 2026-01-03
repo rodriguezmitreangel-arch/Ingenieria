@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Cuenta - Sistema AR3D</title>
+    <link rel="stylesheet" href="css/register.css">
+    <script defer src="./js/register.js"></script>
+
+</head>
+
+<body>
+
+    <div class="register-container">
+
+        <div class="register-card">
+
+            <h1 class="title">Crear Cuenta</h1>
+            <p class="subtitle">Regístrate para usar el sistema AR 3D</p>
+
+            <!-- FORMULARIO CORRECTO -->
+            <form id="formRegister">
+
+                <label>Nombre completo</label>
+                <input type="text" id="nombre" placeholder="Tu nombre completo" required>
+
+                <label>Usuario</label>
+                <input type="text" id="usuario" placeholder="Usuario único" required>
+
+                <label>Correo electrónico</label>
+                <input type="email" id="correo" placeholder="example@mail.com" required>
+
+                <label>Contraseña</label>
+                <input type="password" id="password" placeholder="•••••••" required>
+
+                <label>Repetir contraseña</label>
+                <input type="password" id="password2" placeholder="•••••••" required>
+
+                <button type="submit" class="btn-register">Crear Cuenta</button>
+
+                <div id="loader" class="loader hidden"></div>
+
+                <div class="extra-links">
+                    <a href="login.html">¿Ya tienes cuenta? Inicia sesión</a><br>
+                    <a href="index.html">Volver al inicio</a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+

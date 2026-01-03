@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Galería Dinámica</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- =========================================================
+         PANTALLA INICIAL: ELEGIR FULLSCREEN O MODO NORMAL
+    ========================================================== -->
+    <div id="welcome-screen">
+        <div id="welcome-box">
+            <h2>¿Cómo deseas ver la experiencia?</h2>
+
+            <button id="btn-fullscreen">Presentar en pantalla completa</button>
+            <button id="btn-normal">Entrar sin pantalla completa</button>
+        </div>
+    </div>
+
+
+    <!-- =========================================================
+         SPLASH SCREEN (OCULTO AL INICIO)
+    ========================================================== -->
+    <div id="splash-screen" style="display:none;">
+        
+        <div class="splash-logo">
+            <img src="logo1.jpg" alt="logo">
+        </div>
+
+        <img id="splash-img" src="1.jpg" alt="Splash">
+
+        <div id="splash-loading-bar">
+            <div id="splash-loading-fill"></div>
+        </div>
+
+    </div>
+
+    <!-- LOGO FLOTANTE REAL -->
+    <div class="logo-flotante">
+        <img src="logo.jpg" alt="logo">
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+ 
+
+    <script src="viewer.js"></script>
+
+</body>
+</html>

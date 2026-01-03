@@ -1,0 +1,297 @@
+/* ===========================
+   ESTILOS GENERALES DE LA PÁGINA
+   =========================== */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f1216;
+    color: white;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 50px;
+    background: #15191f;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* ================================
+   LOGO COMO IMAGEN EN EL HEADER
+   ================================ */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 120px;        /* Ajusta el tamaño aquí */
+    width: auto;
+    object-fit: contain;
+    user-select: none;
+}
+
+
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+}
+.logo span {
+    color: #3498db;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #c9d6e2;
+    font-size: 18px;
+    transition: 0.3s;
+}
+nav a:hover {
+    color: #3498db;
+}
+
+.hero {
+    text-align: center;
+    margin-top: 90px;
+}
+.hero h1 {
+    font-size: 55px;
+    margin-bottom: 8px;
+}
+.hero p {
+    font-size: 22px;
+    opacity: 0.7;
+}
+
+/* ============================================
+   BOTONES DE CATEGORÍAS
+   ============================================ */
+#contenedor-botones {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 40px;
+}
+
+.btn-primary {
+    background: #3498db;
+    padding: 14px 35px;
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-primary:hover {
+    background: #217bb5;
+}
+
+/* ============================================
+   VISOR DE IMÁGENES GRANDE (AJUSTADO A PÁGINA)
+   ============================================ */
+#viewer-contenedor {
+    width: 100vw;
+    height: calc(100vh - 180px);
+    max-width: 100%;
+    
+    margin-top: 75px;  /* ↓ Bajado 2 cm */
+
+    margin-left: auto;
+    margin-right: auto;
+
+    border-radius: 12px;
+    background: #11141b;
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+
+
+
+#viewer-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #11141b;
+
+    transition: opacity 0.5s ease;
+}
+
+/* ================================
+   LOGO FLOTANTE SIN BARRA SUPERIOR
+   ================================ */
+.logo-flotante {
+    position: fixed;
+    top: 15px;
+    left: 20px;
+    z-index: 9999;       /* siempre arriba de todo */
+}
+
+.logo-flotante img {
+    height: 180px;        /* ajusta tamaño */
+    width: auto;
+    opacity: 0.92;
+    user-select: none;
+    pointer-events: none;  /* no estorba al click */
+}
+
+/* Elimina espacio que dejaba el header anterior */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* HERO SUBE AUTOMÁTICAMENTE */
+.hero {
+    margin-top: 60px;   /* antes estaba más abajo por el header */
+}
+
+/* ===========================================
+   SPLASH SCREEN DE 2 IMÁGENES
+   =========================================== */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    overflow: hidden;
+    transition: opacity 1s ease-out;
+}
+
+#splash-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* SE AJUSTA SIN PIXELARSE */
+    image-rendering: auto;
+    filter: brightness(0.92);
+    transition: opacity 1s ease-in-out;
+}
+
+/* =============================
+      SPLASH SCREEN COMPLETO
+   ============================= */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999999;
+    overflow: hidden;
+    transition: opacity 1s ease-out;
+}
+
+/* Imagen que se ajusta a la pantalla sin pixelarse */
+#splash-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: auto;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+/* Logo también en pantalla de carga */
+.splash-logo {
+    position: absolute;
+    top: 0px;
+    left: 25px;
+    z-index: 10;
+}
+
+.splash-logo img {
+    height: 200px;
+    width: auto;
+    opacity: 4;
+    pointer-events: none;
+}
+
+/* Barra de carga */
+#splash-loading-bar {
+    position: absolute;
+    bottom: 40px;
+    width: 60%;
+    height: 10px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.2);
+    overflow: hidden;
+    z-index: 10;
+}
+
+#splash-loading-fill {
+    width: 0%;
+    height: 100%;
+    background: #3ba4ff;
+    border-radius: 5px;
+    transition: width linear;
+}
+/* ===============================
+   PANTALLA DE ELECCIÓN INICIAL
+   =============================== */
+#welcome-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0f1216;
+    z-index: 99999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#welcome-box {
+    background: #15191f;
+    padding: 40px 60px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+#welcome-box h2 {
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+#welcome-box button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 14px;
+    font-size: 18px;
+
+    background: #3498db;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+#welcome-box button:hover {
+    background: #277bb3;
+}

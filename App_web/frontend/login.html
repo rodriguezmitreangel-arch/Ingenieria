@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión - Sistema AR3D</title>
+    <link rel="stylesheet" href="css/login.css">
+    <script defer src="js/login.js"></script>
+</head>
+
+<body>
+
+    <!-- CAJA DE LOGIN -->
+    <div class="login-container" id="loginBox">
+
+        <div class="login-card">
+
+            <h1 class="title">Bienvenido</h1>
+            <p class="subtitle">Accede al sistema AR 3D</p>
+
+            <form id="loginForm" onsubmit="return false;">
+
+                <label>Usuario</label>
+                <input type="text" id="userLogin" placeholder="Ingresa tu usuario">
+
+                <label>Contraseña</label>
+                <input type="password" id="passLogin" placeholder="••••••••">
+
+                <!-- IMPORTANTE -->
+                <button id="btnLogin" class="btn-login" type="button">
+                    Iniciar Sesión
+                </button>
+
+                <div class="extra-links">
+                    <a href="register.html">Crear cuenta</a>
+                    <a href="index.html">Volver al inicio</a>
+                </div>
+
+            </form>
+
+            <div id="loader" class="loader hidden"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PANEL OCULTO -->
+    <div id="panelUsuario" class="login-container" style="display:none;">
+
+        <div class="login-card">
+
+            <h1 id="tituloBienvenida"></h1>
+
+            <p><b>Usuario:</b> <span id="infoUsuario"></span></p>
+            <p><b>Correo:</b> <span id="infoCorreo"></span></p>
+            <p><b>ID:</b> <span id="infoID"></span></p>
+
+            <button onclick="logout()" class="btn-login" type="button">
+                Cerrar Sesión
+            </button>
+        </div>
+
+    </div>
+
+</body>
+</html>
+

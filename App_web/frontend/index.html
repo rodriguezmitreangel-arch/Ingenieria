@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema AR 3D</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script defer src="js/auth.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">AR<span>3D</span></div>
+
+        <nav id="nav-menu">
+            <!-- Nombre del usuario -->
+            <span id="user-label" class="hidden"></span>
+
+            <a href="index.html">Inicio</a>
+            <a href="licencia.html">Actualizar licencia</a>
+            <a href="dashboard.html">Panel de Control</a>
+
+            <a id="login-btn" href="login.html">Login</a>
+            <a id="logout-btn" href="#" class="hidden">Cerrar Sesión</a>
+        </nav>
+        <div id="boton-top">
+    <a href="dashboard.html" 
+       class="btn-primary hidden" 
+       id="btnDashboardTop">
+       Panel De Control
+    </a>
+</div>
+
+    </header>
+
+    <section class="hero">
+        <div class="hero-buttons">
+            <a href="login.html" class="btn-primary" id="btnLoginHero">Iniciar Sesión</a>
+            <a href="register.html" class="btn-secondary" id="btnRegisterHero">Crear Cuenta</a>
+
+            <!-- Botón visible SOLO si está logueado -->
+            <a href="dashboard.html" class="btn-primary hidden" id="btnDashboardHero">Panel De Control</a>
+        </div>
+    </section>
+
+</body>
+<script defer src="js/contenedor.js"></script>
+
+</html>
