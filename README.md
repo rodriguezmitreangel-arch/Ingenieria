@@ -1,11 +1,9 @@
-# Development of an Omnidirectional Modular Robot  
+# Manipulación de Objetos 3D en Realidad Aumentada mediante Reconocimiento de Gestos de la Mano
 ## Ing. Inteligencia Artificial, 2025
 Angel Rodriguez Mitre<sup>1</sup>, Norberto Aziel Mejía Hernández<sup>1</sup>
 
 ¹ Instituto Politécnico Nacional  
 
-
-# Manipulación de Objetos 3D en Realidad Aumentada mediante Reconocimiento de Gestos de la Mano
 
 Proyecto académico de **Ingeniería en Inteligencia Artificial** enfocado en el desarrollo de un sistema de **Realidad Aumentada (RA)** que permite **manipular objetos 3D virtuales** (traslación, rotación y escalado) utilizando **gestos naturales de la mano**, basados exclusivamente en **visión por computadora**, sin sensores físicos adicionales.
 
