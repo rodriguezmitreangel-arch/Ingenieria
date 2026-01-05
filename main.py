@@ -6,13 +6,6 @@ V12_2
 Real-time AR con detección de superficie (YOLO + refinamiento), pausa de detección
 cuando hay gesto de mano (MediaPipe) y manipulación 3D. 
 
-Controles:
-- ESC: salir
-- h: mostrar/ocultar landmarks de la mano
-- i: mostrar/ocultar overlay de información del gesto
-- r: reanclar (reacquire) la pose base al marcador (si hay esquinas válidas)
-- f: alternar seguimiento del marcador en TRACK (si está activado, rehace base continuamente)
-
 
 Nota: Si no se cuenta con calibración de cámara (calibracion_cam.npz), el script
 usa intrínsecos aproximados según el tamaño del frame.
