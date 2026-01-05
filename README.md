@@ -103,13 +103,9 @@ El sistema se divide en los siguientes módulos:
 
 ```bash
 ├── App_web/            # Datos utilizados o generados por el proyecto
-├── models/          # Modelos, configuraciones o archivos relacionados
-├── src/             # Código fuente principal
-│   └── main.py      # Punto de entrada del sistema
-├── docs/            # Documentación y material de apoyo
-├── requirements.txt # Dependencias del proyecto
-├── README.md        # Documentación principal
-└── LICENSE          # Licencia
+├── main.py             # Código fuente principal
+├── Prev            # Códigos y material de apoyo previo
+└── README.md        # Documentación principal
 ```
 
 ---
@@ -119,7 +115,7 @@ El sistema se divide en los siguientes módulos:
 1. Clonar el repositorio:
 
 ```bash
-git clone https://github.com/usuario/proyecto-ra-gestos.git
+git clone https://github.com/rodriguezmitreangel-arch/Ingenieria
 cd proyecto-ra-gestos
 ```
 
@@ -139,7 +135,7 @@ source venv/bin/activate  # Linux/Mac
 Ejecutar el archivo principal:
 
 ```bash
-python src/main.py
+python main.py
 ```
 
 Gestos soportados:
